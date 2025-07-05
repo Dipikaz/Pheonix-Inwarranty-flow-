@@ -12,20 +12,24 @@ jobs:
   run-postman-tests:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout the code
-        uses: actions/checkout@v4.2.2
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - name: Install Node.js and npm
-        uses: actions/setup-node@v3.9.1
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: '20'
+          cache: 'npm'
 
-      - name: Install Newman and html-extra reporter
+      - name: Install dependencies
+        run: npm install   # or `npm install` if no lockfile
+
+      - name: Install Newman + reporter
         run: |
           npm install -g newman
           npm install -g newman-reporter-htmlextra
 
-      - name: Run the Postman collection with Newman
+      - name: Run Postman collection
         run: |
           newman run 'Inwarranty-flow Collection.postman_collection.json' \
             -e 'QA.postman_environment.json' \
