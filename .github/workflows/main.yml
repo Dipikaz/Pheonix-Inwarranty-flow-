@@ -30,49 +30,35 @@ jobs:
           newman run 'Inwarranty-flow Collection.postman_collection.json' \
             -e 'QA.postman_environment.json' \
             -d 'testData.csv' \
-            cli,htmlextra\
+            -r cli,htmlextra \
             --reporter-htmlextra-export ./newman/index.html
 
       - name: Newman Report
-        if: always()  # Ensure that the archive is executed irrespective of the previous step's outcome
-        uses: actions/upload-artifact@v4.6.2
+        if: always()  # upload report artifact regardless of test result
+        uses: actions/upload-artifact@v4
         with:
           name: Newman Report
           path: newman/*.html
 
-      - name: Creating github  page branch
+      - name: Publish HTML report via GitHub Pages
         if: always()
-        uses: peaceiris/actions-gh-pages@v4.0.0
-        with: 
-              github_token: ${{secrets.GITHUB_TOKEN}}
-              publish_dir: newman/
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: newman/
 
       - name: Send Email Notification
         if: always()
-        uses: davidd6/action-send-mail@v5
+        uses: dawidd6/action-send-mail@v4
         with:
-               server_address: smtp.gmail.com
-               server_port : 465
-               username: ${{secrets.EMAIL_USERNAME}}
-               password: ${{secrets.EMAIL_PASSWORD}}
-               subject: Pheonix Inwarranty Flow test execution notification
-               to: dipikazope27@gmail.com
-               from: ${{secrets.EMAIL_USERNAME}}
-               body: |
-                       Hi,
-                         Pheonix Inwarranty flow test has been executed and report has been published and URL is https://dipikaz.github.io/Pheonix-Inwarranty-flow-/
-
-                         
- 
-       
-      
-
- 
-              
-        
-      
-
-          
-
-
-      
+          server_address: smtp.gmail.com
+          server_port: 465
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          subject: Phoenix Inwarranty Flow test execution notification
+          to: dipikazope27@gmail.com
+          from: ${{ secrets.EMAIL_USERNAME }}
+          body: |
+            Hi,
+            Phoenix Inwarranty flow test has been executed. You can view the report at:
+            https://dipikaz.github.io/Pheonix-Inwarranty-flow-/
