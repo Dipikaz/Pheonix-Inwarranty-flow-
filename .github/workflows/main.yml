@@ -22,7 +22,7 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm install   # or `npm install` if no lockfile
+        run: npm ci   # or `npm install` if no lockfile
 
       - name: Install Newman + reporter
         run: |
